@@ -22,7 +22,7 @@ vec4 iterate(dvec2 c) {
             break;
         }
 	
-	dvec2 zMinusPoint = length(z - trap);
+	double zMinusPoint = length(z - trap);
 	if(zMinusPoint < distance) {
 	    distance = float(zMinusPoint);
 	}
