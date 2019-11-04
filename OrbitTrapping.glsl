@@ -3,12 +3,15 @@ uniform vec2 iResolution;
 uniform float scale;
 uniform float iterations;
 uniform vec2 transl;
+uniform dvec2 trap;
 
 dvec2 multComplex(dvec2 p1, dvec2 p2) {
     return dvec2(p1.x * p2.x - p1.y * p2.y, p1.x * p2.y + p1.y * p2.x);
 }
 
 vec4 iterate(dvec2 c) {
+    float distance = 100000000;
+    
     float bailout = 2.0;
     dvec2 z = vec2(0);
     float i = 0.0;
@@ -18,9 +21,15 @@ vec4 iterate(dvec2 c) {
         if(length(z) > bailout) {
             break;
         }
+	
+	dvec2 zMinusPoint = length(z - point);
+	if(zMinusPoint < distance) {
+	    distance = zMinusPoint;
+	}
     }
     
-    float gray = i/iterations;
+    //float gray = i/iterations;
+    float gray = distance/10.0;
     
     return vec4(gray, gray, gray, 1.0);
 }
@@ -35,5 +44,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 }
 
 void main() {
-	mainImage(gl_FragColor,gl_FragCoord.xy);
+	mainImage(gl_FragColor, gl_FragCoord.xy);
 }
