@@ -31,20 +31,19 @@ vec3 iterate(dvec2 c) {
     dvec2 z = vec2(0);
     float i = 0.0;
     
-    for(; i < iterations; i++) {
+    for(; i < iterations; i++) {	
         z = multComplex(z, z) + c;
         if(length(z) > bailout) {
             break;
         }
 	
 	double pointTrap = length(z - trap);
-	if(pointTrap < minPointTrap) {
-	    minPointTrap = float(pointTrap);
-	}
+	minPointTrap = min(minPointTrap, float(pointTrap));
     }
     
     float value = i/iterations;
-    vec2 gradient = map(min(vec2(minPointTrap*contrast), 1.0), vec2(0.0), vec2(1.0), g1, g2);
+    minPointTrap = sqrt(minPointTrap)*contrast*iterations;
+    vec2 gradient = map(min(vec2(minPointTrap), 1.0), vec2(0.0), vec2(1.0), g1, g2); // map hue and saturation in a gradient between g1 and g2
     
     return hsv2rgb(vec3(gradient, value));
 }
@@ -58,6 +57,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     fragColor = vec4(iterate(c), 1.0);
 }
 
-void main() {
+void main() { // Call shadertoy main function since this shader was originally written on shadertoy
 	mainImage(gl_FragColor, gl_FragCoord.xy);
 }
